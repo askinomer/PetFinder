@@ -1,0 +1,90 @@
+@model IEnumerable<PetFinder.Models.PetAd>
+@{
+    ViewData["Title"] = "Pet Listings";
+    var selectedSpecies = ViewData["SelectedSpecies"] as string;
+    var selectedCity = ViewData["SelectedCity"] as string;
+}
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h2 class="mb-0"><i class="bi bi-search"></i> Pet Listings</h2>
+    @if (User.Identity?.IsAuthenticated == true)
+    {
+        <a asp-action="Create" class="btn btn-success">
+            <i class="bi bi-plus-circle"></i> New Ad
+        </a>
+    }
+</div>
+
+<!-- Search / Filter -->
+<form method="get" asp-action="Index" class="card card-body bg-white shadow-sm mb-4">
+    <div class="row g-2">
+        <div class="col-md-4">
+            <label class="form-label small">Species</label>
+            <select name="species" class="form-select">
+                <option value="">All</option>
+                <option value="Cat" selected="@(selectedSpecies == "Cat")">Cat</option>
+                <option value="Dog" selected="@(selectedSpecies == "Dog")">Dog</option>
+            </select>
+        </div>
+        <div class="col-md-5">
+            <label class="form-label small">City (contains)</label>
+            <input type="text" name="city" value="@selectedCity" class="form-control" placeholder="e.g. Istanbul" />
+        </div>
+        <div class="col-md-3 d-flex align-items-end">
+            <button type="submit" class="btn btn-primary w-100">
+                <i class="bi bi-funnel"></i> Filter
+            </button>
+        </div>
+    </div>
+</form>
+
+@if (!Model.Any())
+{
+    <div class="alert alert-info text-center">No pet ads match your search.</div>
+}
+else
+{
+    <div class="row g-3">
+        @foreach (var pet in Model)
+        {
+            <div class="col-md-4">
+                <div class="card pet-card shadow-sm h-100">
+                    @if (pet.ImageBytes != null && pet.ImageBytes.Length > 0)
+                    {
+                        <img src="data:image/jpeg;base64,@Convert.ToBase64String(pet.ImageBytes)"
+                             class="card-img-top" alt="@pet.Name" />
+                    }
+                    else
+                    {
+                        <div class="card-img-top bg-light d-flex align-items-center justify-content-center"
+                             style="height:220px;">
+                            <i class="bi bi-image text-muted" style="font-size:3rem;"></i>
+                        </div>
+                    }
+                    <div class="card-body">
+                        <h5 class="card-title mb-1">@pet.Name</h5>
+                        <p class="text-muted small mb-2">
+                            <span class="badge bg-info text-dark">@pet.Species</span>
+                            <i class="bi bi-geo-alt"></i> @pet.City
+                        </p>
+                        <p class="card-text small text-truncate">@pet.Description</p>
+                        <div class="d-flex gap-1">
+                            <a asp-action="Details" asp-route-id="@pet.Id" class="btn btn-sm btn-outline-primary">
+                                <i class="bi bi-eye"></i> Details
+                            </a>
+                            @if (User.Identity?.IsAuthenticated == true)
+                            {
+                                <a asp-action="Edit" asp-route-id="@pet.Id" class="btn btn-sm btn-outline-warning">
+                                    <i class="bi bi-pencil"></i>
+                                </a>
+                                <a asp-action="Delete" asp-route-id="@pet.Id" class="btn btn-sm btn-outline-danger">
+                                    <i class="bi bi-trash"></i>
+                                </a>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+}

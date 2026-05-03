@@ -1,0 +1,42 @@
+@model PetFinder.Models.PetAd
+@{
+    ViewData["Title"] = "Delete Ad";
+}
+
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <div class="card shadow-sm border-danger">
+            <div class="card-body">
+                <h3 class="card-title text-danger">
+                    <i class="bi bi-exclamation-triangle"></i> Confirm Delete
+                </h3>
+                <p>Are you sure you want to delete the following pet ad?</p>
+
+                <dl class="row mt-3">
+                    <dt class="col-sm-3">Name</dt>
+                    <dd class="col-sm-9">@Model.Name</dd>
+
+                    <dt class="col-sm-3">Species</dt>
+                    <dd class="col-sm-9">@Model.Species</dd>
+
+                    <dt class="col-sm-3">City</dt>
+                    <dd class="col-sm-9">@Model.City</dd>
+                </dl>
+
+                @if (Model.ImageBytes != null && Model.ImageBytes.Length > 0)
+                {
+                    <img src="data:image/jpeg;base64,@Convert.ToBase64String(Model.ImageBytes)"
+                         alt="@Model.Name" style="max-height:160px;" class="rounded mb-3" />
+                }
+
+                <form asp-action="Delete" method="post">
+                    <input type="hidden" asp-for="Id" />
+                    <button type="submit" class="btn btn-danger">
+                        <i class="bi bi-trash"></i> Yes, Delete
+                    </button>
+                    <a asp-action="Index" class="btn btn-secondary">Cancel</a>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
