@@ -11,7 +11,7 @@ public class PetAdController : Controller
 
     public PetAdController(IPetAdService petAdService) => _petAdService = petAdService;
 
-    // Public listing & search
+    // Herkese açık liste + arama
     [AllowAnonymous]
     public async Task<IActionResult> Index(string? species, string? city)
     {
@@ -29,7 +29,7 @@ public class PetAdController : Controller
         return View(ad);
     }
 
-    // ===== Create =====
+    // ===== Yeni İlan =====
     [Authorize]
     [HttpGet]
     public IActionResult Create() => View();
@@ -49,11 +49,11 @@ public class PetAdController : Controller
         }
 
         await _petAdService.CreateAsync(model);
-        TempData["Success"] = "Pet ad created successfully.";
+        TempData["Success"] = "İlan başarıyla oluşturuldu.";
         return RedirectToAction(nameof(Index));
     }
 
-    // ===== Edit =====
+    // ===== Düzenle =====
     [Authorize]
     [HttpGet]
     public async Task<IActionResult> Edit(int id)
@@ -80,11 +80,11 @@ public class PetAdController : Controller
         var updated = await _petAdService.UpdateAsync(model);
         if (updated == null) return NotFound();
 
-        TempData["Success"] = "Pet ad updated.";
+        TempData["Success"] = "İlan güncellendi.";
         return RedirectToAction(nameof(Index));
     }
 
-    // ===== Delete =====
+    // ===== Sil =====
     [Authorize]
     [HttpGet]
     public async Task<IActionResult> Delete(int id)
@@ -100,7 +100,7 @@ public class PetAdController : Controller
     public async Task<IActionResult> DeleteConfirmed(int id)
     {
         await _petAdService.DeleteAsync(id);
-        TempData["Success"] = "Pet ad deleted.";
+        TempData["Success"] = "İlan silindi.";
         return RedirectToAction(nameof(Index));
     }
 }

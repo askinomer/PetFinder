@@ -1,8 +1,10 @@
 @{
-    ViewData["Title"] = "Access Denied";
+    ViewData["Title"] = "Erişim Engellendi";
 }
-<div class="alert alert-danger text-center">
-    <h4><i class="bi bi-shield-exclamation"></i> Access Denied</h4>
-    <p>You do not have permission to perform this action.</p>
-    <a asp-controller="Account" asp-action="Login" class="btn btn-primary">Login</a>
+<div class="container my-5">
+    <div class="alert alert-danger text-center">
+        <h4><i class="bi bi-shield-exclamation"></i> Erişim Engellendi</h4>
+        <p>Bu işlemi yapmaya yetkiniz yok.</p>
+        <a asp-controller="Account" asp-action="Login" class="btn btn-pf">Giriş Yap</a>
+    </div>
 </div>

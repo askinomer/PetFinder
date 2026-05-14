@@ -1,0 +1,235 @@
+/* ===== PetFinder Brand ===== */
+:root {
+    --pf-purple: #6E1FB8;
+    --pf-purple-dark: #4B1383;
+    --pf-purple-light: #A26AD8;
+    --pf-pink: #FF6B6B;
+    --pf-cream: #FAF8FF;
+    --pf-text: #2D2235;
+}
+
+html, body { height: 100%; }
+body {
+    background-color: var(--pf-cream);
+    color: var(--pf-text);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+}
+
+/* ===== Top Notice Bar ===== */
+.top-notice {
+    background: #F1ECF8;
+    color: var(--pf-purple-dark);
+    font-size: 0.85rem;
+    padding: 0.5rem 0;
+    text-align: right;
+}
+.top-notice a { color: var(--pf-purple); text-decoration: underline; font-weight: 600; }
+
+/* ===== Navbar ===== */
+.pf-navbar {
+    background: #fff !important;
+    box-shadow: 0 2px 6px rgba(0,0,0,.05);
+    padding: 0.75rem 0;
+}
+.pf-navbar .navbar-brand {
+    font-size: 1.8rem;
+    font-weight: 800;
+    color: var(--pf-purple) !important;
+    letter-spacing: -0.5px;
+}
+.pf-navbar .nav-link {
+    color: #444 !important;
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 0.85rem;
+    letter-spacing: 0.5px;
+}
+.pf-navbar .nav-link:hover { color: var(--pf-purple) !important; }
+
+.btn-pf {
+    background: var(--pf-purple);
+    color: #fff !important;
+    border: none;
+    border-radius: 999px;
+    padding: 0.5rem 1.5rem;
+    font-weight: 700;
+    letter-spacing: 0.4px;
+    transition: background 0.2s;
+}
+.btn-pf:hover { background: var(--pf-purple-dark); color: #fff; }
+
+.btn-pf-outline {
+    background: transparent;
+    color: var(--pf-purple) !important;
+    border: 2px solid var(--pf-purple);
+    border-radius: 999px;
+    padding: 0.4rem 1.4rem;
+    font-weight: 700;
+    transition: all 0.2s;
+}
+.btn-pf-outline:hover { background: var(--pf-purple); color: #fff !important; }
+
+/* ===== Hero ===== */
+.hero {
+    position: relative;
+    min-height: 520px;
+    background:
+        linear-gradient(rgba(110,31,184,.25), rgba(75,19,131,.45)),
+        url('https://images.unsplash.com/photo-1450778869180-41d0601e046e?auto=format&fit=crop&w=2000&q=80') center/cover no-repeat;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    text-align: center;
+    padding: 4rem 1rem 5rem;
+}
+.hero h1 {
+    font-weight: 800;
+    font-size: 2.6rem;
+    text-shadow: 0 2px 12px rgba(0,0,0,.4);
+    margin-bottom: 0.5rem;
+}
+.hero p.lead {
+    font-size: 1.1rem;
+    text-shadow: 0 1px 8px rgba(0,0,0,.4);
+}
+.hero-search {
+    background: #fff;
+    border-radius: 999px;
+    padding: 0.4rem;
+    max-width: 760px;
+    margin: 0 auto 2rem;
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    box-shadow: 0 10px 30px rgba(0,0,0,.2);
+}
+.hero-search select,
+.hero-search input {
+    border: none;
+    box-shadow: none;
+    background: transparent;
+    height: 48px;
+    color: var(--pf-text);
+}
+.hero-search select:focus,
+.hero-search input:focus { outline: none; box-shadow: none; }
+.hero-search .divider {
+    width: 1px; height: 28px; background: #ddd;
+}
+.hero-search .btn-search {
+    background: var(--pf-purple);
+    border: none;
+    border-radius: 999px;
+    width: 50px; height: 50px;
+    color: #fff;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+}
+.hero-search .btn-search:hover { background: var(--pf-purple-dark); }
+
+/* ===== Category Cards ===== */
+.category-strip {
+    background: #fff;
+    box-shadow: 0 -10px 30px rgba(110,31,184,.08);
+    border-top: 6px solid var(--pf-purple-light);
+    padding: 3rem 0;
+}
+.cat-card {
+    background: #fff;
+    border-radius: 14px;
+    padding: 1.5rem 1rem;
+    text-align: center;
+    box-shadow: 0 4px 16px rgba(0,0,0,.06);
+    transition: transform 0.2s, box-shadow 0.2s;
+    text-decoration: none;
+    color: var(--pf-text);
+    display: block;
+    border: 1px solid #eee;
+}
+.cat-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 10px 24px rgba(110,31,184,.18);
+    color: var(--pf-purple-dark);
+    border-color: var(--pf-purple-light);
+}
+.cat-card svg, .cat-card .cat-icon {
+    width: 64px; height: 64px;
+    color: var(--pf-purple);
+    margin-bottom: 0.75rem;
+}
+.cat-card h5 { font-weight: 700; margin: 0; }
+
+/* ===== Pet listing cards ===== */
+.pet-card {
+    border: none;
+    border-radius: 16px;
+    overflow: hidden;
+    transition: transform .2s, box-shadow .2s;
+    background: #fff;
+}
+.pet-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 24px rgba(110,31,184,.18);
+}
+.pet-card .card-img-top {
+    height: 220px; object-fit: cover;
+}
+.pet-card .badge-species {
+    background: var(--pf-purple);
+    color: #fff;
+}
+.pet-card .badge-city {
+    background: #F1ECF8;
+    color: var(--pf-purple-dark);
+}
+
+/* ===== Section headings ===== */
+.section-heading {
+    color: var(--pf-purple-dark);
+    font-weight: 800;
+    margin-bottom: 1.5rem;
+    position: relative;
+}
+.section-heading::after {
+    content: "";
+    display: block;
+    width: 60px; height: 4px;
+    background: var(--pf-purple);
+    margin-top: 0.5rem;
+    border-radius: 2px;
+}
+
+/* ===== Footer ===== */
+.pf-footer {
+    background: var(--pf-purple-dark);
+    color: #E6D9F4;
+    padding: 2.5rem 0 1rem;
+    margin-top: 4rem;
+}
+.pf-footer a { color: #fff; text-decoration: none; }
+.pf-footer a:hover { text-decoration: underline; }
+
+/* ===== Auth cards ===== */
+.auth-card {
+    border: none;
+    border-radius: 18px;
+    box-shadow: 0 12px 40px rgba(110,31,184,.15);
+}
+.auth-card .form-control:focus {
+    border-color: var(--pf-purple-light);
+    box-shadow: 0 0 0 0.25rem rgba(110,31,184,.15);
+}
+
+/* ===== Stats strip ===== */
+.stats-strip {
+    background: linear-gradient(135deg, var(--pf-purple) 0%, var(--pf-purple-dark) 100%);
+    color: #fff;
+    padding: 2.5rem 0;
+    margin: 3rem 0;
+    border-radius: 18px;
+}
+.stat-num {
+    font-size: 2.5rem; font-weight: 800; line-height: 1;
+}
+.stat-label { font-size: 0.95rem; opacity: 0.9; }

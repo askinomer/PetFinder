@@ -1,33 +1,35 @@
 @model PetFinder.Models.ViewModels.LoginViewModel
 @{
-    ViewData["Title"] = "Register";
+    ViewData["Title"] = "Kayıt Ol";
 }
 
-<div class="row justify-content-center">
-    <div class="col-md-5">
-        <div class="card shadow-sm">
-            <div class="card-body">
-                <h3 class="card-title text-center mb-4">
-                    <i class="bi bi-person-plus"></i> Register
-                </h3>
-                <form asp-action="Register" method="post">
-                    <div asp-validation-summary="All" class="text-danger small mb-2"></div>
+<div class="container my-5">
+    <div class="row justify-content-center">
+        <div class="col-md-5">
+            <div class="card auth-card">
+                <div class="card-body p-4">
+                    <h3 class="card-title text-center mb-4" style="color:var(--pf-purple-dark);">
+                        <i class="bi bi-person-plus"></i> Yeni Hesap Oluştur
+                    </h3>
+                    <form asp-action="Register" method="post">
+                        <div asp-validation-summary="All" class="text-danger small mb-2"></div>
 
-                    <div class="mb-3">
-                        <label asp-for="Username" class="form-label"></label>
-                        <input asp-for="Username" class="form-control" />
-                        <span asp-validation-for="Username" class="text-danger small"></span>
-                    </div>
-                    <div class="mb-3">
-                        <label asp-for="Password" class="form-label"></label>
-                        <input asp-for="Password" class="form-control" />
-                        <span asp-validation-for="Password" class="text-danger small"></span>
-                    </div>
-                    <button type="submit" class="btn btn-success w-100">Create Account</button>
-                </form>
-                <p class="text-center text-muted mt-3 mb-0 small">
-                    Already have one? <a asp-action="Login">Login</a>
-                </p>
+                        <div class="mb-3">
+                            <label asp-for="Username" class="form-label"></label>
+                            <input asp-for="Username" class="form-control" placeholder="Kullanıcı adınız" />
+                            <span asp-validation-for="Username" class="text-danger small"></span>
+                        </div>
+                        <div class="mb-4">
+                            <label asp-for="Password" class="form-label"></label>
+                            <input asp-for="Password" class="form-control" placeholder="Bir şifre belirleyin" />
+                            <span asp-validation-for="Password" class="text-danger small"></span>
+                        </div>
+                        <button type="submit" class="btn btn-pf w-100 py-2">Kayıt Ol</button>
+                    </form>
+                    <p class="text-center text-muted mt-3 mb-0 small">
+                        Hesabın var mı? <a asp-action="Login" style="color:var(--pf-purple);">Giriş yap</a>
+                    </p>
+                </div>
             </div>
         </div>
     </div>

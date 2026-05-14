@@ -1,0 +1,189 @@
+@model IEnumerable<PetFinder.Models.PetAd>
+@{
+    ViewData["Title"] = "Admin Panel";
+    var users = ViewBag.Users as List<PetFinder.Models.User>;
+    var totalAds = (int)ViewBag.TotalAds;
+    var dogCount = (int)ViewBag.DogCount;
+    var catCount = (int)ViewBag.CatCount;
+    var userCount = (int)ViewBag.UserCount;
+    var cities = Model.GroupBy(p => p.City).OrderByDescending(g => g.Count()).Take(5).ToList();
+}
+
+<div class="container my-5">
+    <!-- Başlık -->
+    <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
+        <div>
+            <h2 class="section-heading mb-0"><i class="bi bi-speedometer2"></i> Yönetim Paneli</h2>
+            <small class="text-muted">Hoş geldin, @User.Identity?.Name · Sistemin tamamına erişim yetkin var</small>
+        </div>
+        <div>
+            <a asp-controller="PetAd" asp-action="Create" class="btn btn-pf btn-sm">
+                <i class="bi bi-plus-circle"></i> Yeni İlan
+            </a>
+            <a asp-action="Users" class="btn btn-pf-outline btn-sm">
+                <i class="bi bi-people"></i> Kullanıcılar
+            </a>
+        </div>
+    </div>
+
+    <!-- İstatistik kartları -->
+    <div class="row g-3 mb-4">
+        <div class="col-md-3 col-6">
+            <div class="card auth-card p-3 h-100">
+                <div class="d-flex align-items-center">
+                    <div class="me-3" style="font-size:2.5rem;">📋</div>
+                    <div>
+                        <div class="text-muted small">TOPLAM İLAN</div>
+                        <div class="h2 fw-bold mb-0" style="color:var(--pf-purple);">@totalAds</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 col-6">
+            <div class="card auth-card p-3 h-100">
+                <div class="d-flex align-items-center">
+                    <div class="me-3" style="font-size:2.5rem;">🐕</div>
+                    <div>
+                        <div class="text-muted small">KÖPEK</div>
+                        <div class="h2 fw-bold mb-0" style="color:var(--pf-purple);">@dogCount</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 col-6">
+            <div class="card auth-card p-3 h-100">
+                <div class="d-flex align-items-center">
+                    <div class="me-3" style="font-size:2.5rem;">🐈</div>
+                    <div>
+                        <div class="text-muted small">KEDİ</div>
+                        <div class="h2 fw-bold mb-0" style="color:var(--pf-purple);">@catCount</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 col-6">
+            <div class="card auth-card p-3 h-100">
+                <div class="d-flex align-items-center">
+                    <div class="me-3" style="font-size:2.5rem;">👥</div>
+                    <div>
+                        <div class="text-muted small">KULLANICI</div>
+                        <div class="h2 fw-bold mb-0" style="color:var(--pf-purple);">@userCount</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Dağılım + Şehirler -->
+    <div class="row g-3 mb-4">
+        <div class="col-md-6">
+            <div class="card auth-card p-4 h-100">
+                <h6 class="fw-bold mb-3"><i class="bi bi-pie-chart"></i> Tür Dağılımı</h6>
+                @{
+                    var dogPercent = totalAds > 0 ? (dogCount * 100 / totalAds) : 0;
+                    var catPercent = totalAds > 0 ? (catCount * 100 / totalAds) : 0;
+                }
+                <div class="mb-3">
+                    <div class="d-flex justify-content-between small mb-1">
+                        <span>🐕 Köpekler</span>
+                        <strong>@dogCount (@dogPercent%)</strong>
+                    </div>
+                    <div class="progress" style="height:10px;">
+                        <div class="progress-bar" role="progressbar" style="width:@(dogPercent)%; background:var(--pf-purple);"></div>
+                    </div>
+                </div>
+                <div>
+                    <div class="d-flex justify-content-between small mb-1">
+                        <span>🐈 Kediler</span>
+                        <strong>@catCount (@catPercent%)</strong>
+                    </div>
+                    <div class="progress" style="height:10px;">
+                        <div class="progress-bar" role="progressbar" style="width:@(catPercent)%; background:var(--pf-purple-light);"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card auth-card p-4 h-100">
+                <h6 class="fw-bold mb-3"><i class="bi bi-geo-alt"></i> En Çok İlan Bulunan Şehirler</h6>
+                @if (cities.Any())
+                {
+                    foreach (var c in cities)
+                    {
+                        var percent = totalAds > 0 ? (c.Count() * 100 / totalAds) : 0;
+                        <div class="mb-2">
+                            <div class="d-flex justify-content-between small mb-1">
+                                <span>@c.Key</span>
+                                <strong>@c.Count() ilan</strong>
+                            </div>
+                            <div class="progress" style="height:6px;">
+                                <div class="progress-bar" style="width:@(percent)%; background:var(--pf-purple);"></div>
+                            </div>
+                        </div>
+                    }
+                }
+                else
+                {
+                    <p class="text-muted small mb-0">Henüz şehir verisi yok.</p>
+                }
+            </div>
+        </div>
+    </div>
+
+    <!-- Tüm İlanlar tablosu -->
+    <div class="card auth-card p-3">
+        <h5 class="mb-3"><i class="bi bi-list-ul"></i> Tüm İlanlar</h5>
+        <div class="table-responsive">
+            <table class="table table-hover align-middle">
+                <thead class="table-light">
+                    <tr>
+                        <th>#</th>
+                        <th>Fotoğraf</th>
+                        <th>İsim</th>
+                        <th>Tür</th>
+                        <th>Şehir</th>
+                        <th class="text-end">İşlemler</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var ad in Model)
+                    {
+                        <tr>
+                            <td class="text-muted">#@ad.Id</td>
+                            <td>
+                                @if (ad.ImageBytes != null && ad.ImageBytes.Length > 0)
+                                {
+                                    <img src="data:image/jpeg;base64,@Convert.ToBase64String(ad.ImageBytes)"
+                                         style="width:50px; height:50px; object-fit:cover; border-radius:8px;" />
+                                }
+                                else
+                                {
+                                    <span style="font-size:1.8rem;">@(ad.Species == "Kedi" ? "🐈" : "🐕")</span>
+                                }
+                            </td>
+                            <td><strong>@ad.Name</strong></td>
+                            <td><span class="badge badge-species">@ad.Species</span></td>
+                            <td>@ad.City</td>
+                            <td class="text-end">
+                                <a asp-controller="PetAd" asp-action="Details" asp-route-id="@ad.Id"
+                                   class="btn btn-sm btn-outline-secondary" title="Görüntüle"><i class="bi bi-eye"></i></a>
+                                <a asp-controller="PetAd" asp-action="Edit" asp-route-id="@ad.Id"
+                                   class="btn btn-sm btn-outline-warning" title="Düzenle"><i class="bi bi-pencil"></i></a>
+                                <form asp-action="DeleteAd" method="post" class="d-inline"
+                                      onsubmit="return confirm('@ad.Name ilanını silmek istediğine emin misin?');">
+                                    @Html.AntiForgeryToken()
+                                    <input type="hidden" name="id" value="@ad.Id" />
+                                    <button class="btn btn-sm btn-outline-danger" title="Sil"><i class="bi bi-trash"></i></button>
+                                </form>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+            @if (!Model.Any())
+            {
+                <p class="text-center text-muted py-3">Henüz ilan yok.</p>
+            }
+        </div>
+    </div>
+</div>

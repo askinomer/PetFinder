@@ -7,16 +7,11 @@ namespace PetFinder.Services;
 public class UserService : IUserService
 {
     private readonly AppDbContext _db;
-
     public UserService(AppDbContext db) => _db = db;
 
-    public async Task<User?> ValidateAsync(string username, string password)
-    {
-        // For a final term project: simple lookup. In production: hash + compare.
-        return await _db.Users
-            .AsNoTracking()
+    public async Task<User?> ValidateAsync(string username, string password) =>
+        await _db.Users.AsNoTracking()
             .FirstOrDefaultAsync(u => u.Username == username && u.Password == password);
-    }
 
     public async Task<User?> GetByIdAsync(int id) => await _db.Users.FindAsync(id);
 
@@ -28,5 +23,17 @@ public class UserService : IUserService
         _db.Users.Add(user);
         await _db.SaveChangesAsync();
         return user;
+    }
+
+    public async Task<List<User>> GetAllAsync() =>
+        await _db.Users.AsNoTracking().OrderBy(u => u.Id).ToListAsync();
+
+    public async Task<bool> DeleteAsync(int id)
+    {
+        var user = await _db.Users.FindAsync(id);
+        if (user == null) return false;
+        _db.Users.Remove(user);
+        await _db.SaveChangesAsync();
+        return true;
     }
 }

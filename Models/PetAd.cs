@@ -7,15 +7,18 @@ public class PetAd
 {
     public int Id { get; set; }
 
-    [Required(ErrorMessage = "Evcil hayvan adı gereklidir."), StringLength(100)]
+    [Required(ErrorMessage = "Hayvanın adı zorunludur.")]
+    [StringLength(100)]
     [Display(Name = "İsim")]
     public string Name { get; set; } = string.Empty;
 
-    [Required(ErrorMessage = "Tür bilgisi gereklidir."), StringLength(50)]
+    [Required(ErrorMessage = "Tür seçilmelidir.")]
+    [StringLength(50)]
     [Display(Name = "Tür")]
-    public string Species { get; set; } = string.Empty; // "Cat" or "Dog"
+    public string Species { get; set; } = string.Empty; // "Kedi" veya "Köpek"
 
-    [Required(ErrorMessage = "Şehir bilgisi gereklidir."), StringLength(100)]
+    [Required(ErrorMessage = "Şehir zorunludur.")]
+    [StringLength(100)]
     [Display(Name = "Şehir")]
     public string City { get; set; } = string.Empty;
 
@@ -23,7 +26,8 @@ public class PetAd
     [Display(Name = "Açıklama")]
     public string Description { get; set; } = string.Empty;
 
-    // VARBINARY(MAX) in SQL Server, byte[] in C#
+    // SQL Server'da VARBINARY(MAX), C#'ta byte[]
     [Column(TypeName = "VARBINARY(MAX)")]
+    [Display(Name = "Fotoğraf")]
     public byte[]? ImageBytes { get; set; }
 }

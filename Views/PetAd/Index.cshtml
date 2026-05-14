@@ -1,90 +1,304 @@
 @model IEnumerable<PetFinder.Models.PetAd>
 @{
-    ViewData["Title"] = "Hayvan İlanları";
+    ViewData["Title"] = "Anasayfa";
     var selectedSpecies = ViewData["SelectedSpecies"] as string;
     var selectedCity = ViewData["SelectedCity"] as string;
+    var totalCount = Model.Count();
+    var dogCount = Model.Count(p => p.Species == "Köpek");
+    var catCount = Model.Count(p => p.Species == "Kedi");
+    var cityCount = Model.Select(p => p.City).Distinct().Count();
+    var isFiltered = !string.IsNullOrEmpty(selectedSpecies) || !string.IsNullOrEmpty(selectedCity);
 }
 
-<div class="d-flex justify-content-between align-items-center mb-3">
-    <h2 class="mb-0"><i class="bi bi-search"></i> Hayvan İlanları</h2>
-    @if (User.Identity?.IsAuthenticated == true)
-    {
-        <a asp-action="Create" class="btn btn-success">
-            <i class="bi bi-plus-circle"></i> Yeni İlan
-        </a>
-    }
-</div>
-
-<!-- Search / Filter -->
-<form method="get" asp-action="Index" class="card card-body bg-white shadow-sm mb-4">
-    <div class="row g-2">
-        <div class="col-md-4">
-            <label class="form-label small">Tür</label>
-            <select name="species" class="form-select">
-                <option value="">Tümü</option>
-                <option value="Cat" selected="@(selectedSpecies == "Cat")">Kedi (Cat)</option>
-                <option value="Dog" selected="@(selectedSpecies == "Dog")">Köpek (Dog)</option>
+<!-- ===== HERO ===== -->
+<section class="hero">
+    <div class="container">
+        <form method="get" asp-action="Index" class="hero-search">
+            <select name="species" class="form-select form-select-lg" style="max-width:180px;">
+                <option value="">Tür seçin…</option>
+                <option value="Köpek" selected="@(selectedSpecies == "Köpek")">Köpek</option>
+                <option value="Kedi" selected="@(selectedSpecies == "Kedi")">Kedi</option>
             </select>
-        </div>
-        <div class="col-md-5">
-            <label class="form-label small">Şehir (içerir)</label>
-            <input type="text" name="city" value="@selectedCity" class="form-control" placeholder="Örn: Istanbul" />
-        </div>
-        <div class="col-md-3 d-flex align-items-end">
-            <button type="submit" class="btn btn-primary w-100">
-                <i class="bi bi-funnel"></i> Filtrele
+            <div class="divider"></div>
+            <input type="text" name="city" value="@selectedCity" class="form-control form-control-lg flex-grow-1"
+                   placeholder="Şehir — örn. Ankara, İstanbul, İzmir" />
+            <button type="submit" class="btn-search" title="Ara">
+                <i class="bi bi-search"></i>
             </button>
+        </form>
+
+        <h1>Yeni En İyi Dostunuzu Bulun ve Sahiplendirin</h1>
+        <p class="lead">Türkiye'nin dört bir yanından kayıp ve sahiplendirme ilanlarını keşfedin.</p>
+    </div>
+</section>
+
+<!-- ===== KATEGORİ KARTLARI ===== -->
+<section class="category-strip">
+    <div class="container">
+        <div class="row g-3 justify-content-center">
+            <div class="col-6 col-md-3">
+                <a asp-action="Index" asp-route-species="Köpek" class="cat-card">
+                    <div style="font-size:3rem;">🐕</div>
+                    <h5>Köpekler</h5>
+                    <small class="text-muted">@dogCount aktif ilan</small>
+                </a>
+            </div>
+            <div class="col-6 col-md-3">
+                <a asp-action="Index" asp-route-species="Kedi" class="cat-card">
+                    <div style="font-size:3rem;">🐈</div>
+                    <h5>Kediler</h5>
+                    <small class="text-muted">@catCount aktif ilan</small>
+                </a>
+            </div>
+            <div class="col-6 col-md-3">
+                <a asp-action="Index" class="cat-card">
+                    <div style="font-size:3rem;">🏠</div>
+                    <h5>Tüm İlanlar</h5>
+                    <small class="text-muted">@totalCount toplam</small>
+                </a>
+            </div>
+            <div class="col-6 col-md-3">
+                @if (User.Identity?.IsAuthenticated == true)
+                {
+                    <a asp-action="Create" class="cat-card">
+                        <div style="font-size:3rem;">➕</div>
+                        <h5>Yeni İlan</h5>
+                        <small class="text-muted">Hemen oluştur</small>
+                    </a>
+                }
+                else
+                {
+                    <a asp-controller="Account" asp-action="Login" class="cat-card">
+                        <div style="font-size:3rem;">👤</div>
+                        <h5>Giriş Yap</h5>
+                        <small class="text-muted">İlan oluştur</small>
+                    </a>
+                }
+            </div>
         </div>
     </div>
-</form>
+</section>
 
-@if (!Model.Any())
-{
-    <div class="alert alert-info text-center">Aramanızla eşleşen hayvan ilanı bulunamadı.</div>
-}
-else
-{
-    <div class="row g-3">
-        @foreach (var pet in Model)
-        {
-            <div class="col-md-4">
-                <div class="card pet-card shadow-sm h-100">
-                    @if (pet.ImageBytes != null && pet.ImageBytes.Length > 0)
-                    {
-                        <img src="data:image/jpeg;base64,@Convert.ToBase64String(pet.ImageBytes)"
-                             class="card-img-top" alt="@pet.Name" />
-                    }
-                    else
-                    {
-                        <div class="card-img-top bg-light d-flex align-items-center justify-content-center"
-                             style="height:220px;">
-                            <i class="bi bi-image text-muted" style="font-size:3rem;"></i>
-                        </div>
-                    }
-                    <div class="card-body">
-                        <h5 class="card-title mb-1">@pet.Name</h5>
-                        <p class="text-muted small mb-2">
-                            <span class="badge bg-info text-dark">@pet.Species</span>
-                            <i class="bi bi-geo-alt"></i> @pet.City
-                        </p>
-                        <p class="card-text small text-truncate">@pet.Description</p>
-                        <div class="d-flex gap-1">
-                            <a asp-action="Details" asp-route-id="@pet.Id" class="btn btn-sm btn-outline-primary">
-                                <i class="bi bi-eye"></i> Detaylar
-                            </a>
-                            @if (User.Identity?.IsAuthenticated == true)
-                            {
-                                <a asp-action="Edit" asp-route-id="@pet.Id" class="btn btn-sm btn-outline-warning">
-                                    <i class="bi bi-pencil"></i>
+<!-- ===== İLAN LİSTESİ ===== -->
+<section class="container my-5">
+    <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
+        <h2 class="section-heading mb-0">
+            @(isFiltered ? "Arama Sonuçları" : "Güncel İlanlar")
+        </h2>
+        <div class="text-muted small">
+            Toplam <strong class="text-dark">@totalCount</strong> ilan
+        </div>
+    </div>
+
+    @if (isFiltered)
+    {
+        <div class="mb-3">
+            <span class="text-muted small me-2">Aktif filtre:</span>
+            @if (!string.IsNullOrEmpty(selectedSpecies))
+            {
+                <span class="badge bg-light text-dark border me-1">Tür: @selectedSpecies</span>
+            }
+            @if (!string.IsNullOrEmpty(selectedCity))
+            {
+                <span class="badge bg-light text-dark border me-1">Şehir: @selectedCity</span>
+            }
+            <a asp-action="Index" class="btn btn-sm btn-pf-outline ms-2">
+                <i class="bi bi-x-circle"></i> Filtreyi Temizle
+            </a>
+        </div>
+    }
+
+    @if (!Model.Any())
+    {
+        <div class="text-center py-5">
+            <i class="bi bi-emoji-frown" style="font-size:4rem; color:var(--pf-purple-light);"></i>
+            <h4 class="mt-3">İlan bulunamadı</h4>
+            <p class="text-muted">Aramanıza uygun ilan yok. Farklı bir tür ya da şehir deneyin.</p>
+            <a asp-action="Index" class="btn btn-pf mt-2">Tüm İlanları Gör</a>
+        </div>
+    }
+    else
+    {
+        <div class="row g-4">
+            @foreach (var pet in Model)
+            {
+                <div class="col-md-6 col-lg-4">
+                    <div class="card pet-card shadow-sm h-100">
+                        @if (pet.ImageBytes != null && pet.ImageBytes.Length > 0)
+                        {
+                            <img src="data:image/jpeg;base64,@Convert.ToBase64String(pet.ImageBytes)"
+                                 class="card-img-top" alt="@pet.Name" />
+                        }
+                        else
+                        {
+                            <div class="card-img-top bg-light d-flex align-items-center justify-content-center" style="height:220px;">
+                                <span style="font-size:4rem;">@(pet.Species == "Kedi" ? "🐈" : "🐕")</span>
+                            </div>
+                        }
+                        <div class="card-body">
+                            <h5 class="card-title mb-1">@pet.Name</h5>
+                            <div class="mb-2">
+                                <span class="badge badge-species">@pet.Species</span>
+                                <span class="badge badge-city"><i class="bi bi-geo-alt"></i> @pet.City</span>
+                            </div>
+                            <p class="card-text text-muted small text-truncate">@pet.Description</p>
+                            <div class="d-flex gap-1 flex-wrap">
+                                <a asp-action="Details" asp-route-id="@pet.Id" class="btn btn-sm btn-pf">
+                                    <i class="bi bi-eye"></i> Detay
                                 </a>
-                                <a asp-action="Delete" asp-route-id="@pet.Id" class="btn btn-sm btn-outline-danger">
-                                    <i class="bi bi-trash"></i>
-                                </a>
-                            }
+                                @if (User.Identity?.IsAuthenticated == true)
+                                {
+                                    <a asp-action="Edit" asp-route-id="@pet.Id" class="btn btn-sm btn-outline-warning">
+                                        <i class="bi bi-pencil"></i>
+                                    </a>
+                                    <a asp-action="Delete" asp-route-id="@pet.Id" class="btn btn-sm btn-outline-danger">
+                                        <i class="bi bi-trash"></i>
+                                    </a>
+                                }
+                            </div>
                         </div>
                     </div>
                 </div>
+            }
+        </div>
+    }
+</section>
+
+<!-- ===== NASIL ÇALIŞIR? ===== -->
+<section class="container my-5">
+    <h2 class="section-heading text-center" style="display:inline-block;">Nasıl Çalışır?</h2>
+    <p class="text-center text-muted mb-5">3 basit adımda yeni dostuna kavuş</p>
+    <div class="row g-4">
+        <div class="col-md-4">
+            <div class="card auth-card text-center p-4 h-100">
+                <div class="mb-3" style="font-size:3.5rem;">🔍</div>
+                <h5 style="color:var(--pf-purple-dark);">1. Ara</h5>
+                <p class="text-muted small mb-0">Türe ve şehre göre ilanları filtrele, sana uygun olanı bul.</p>
             </div>
-        }
+        </div>
+        <div class="col-md-4">
+            <div class="card auth-card text-center p-4 h-100">
+                <div class="mb-3" style="font-size:3.5rem;">💬</div>
+                <h5 style="color:var(--pf-purple-dark);">2. İletişime Geç</h5>
+                <p class="text-muted small mb-0">İlanın detaylarını incele, ilan sahibiyle iletişime geç.</p>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card auth-card text-center p-4 h-100">
+                <div class="mb-3" style="font-size:3.5rem;">🏡</div>
+                <h5 style="color:var(--pf-purple-dark);">3. Yuvalandır</h5>
+                <p class="text-muted small mb-0">Yeni dostunu yuvana götür ve hayatına bir patilik mutluluk kat.</p>
+            </div>
+        </div>
     </div>
-}
+</section>
+
+<!-- ===== İSTATİSTİK ŞERİDİ ===== -->
+<div class="container">
+    <div class="stats-strip">
+        <div class="container">
+            <div class="row text-center g-3">
+                <div class="col-md-3 col-6">
+                    <div class="stat-num">@totalCount</div>
+                    <div class="stat-label">Aktif İlan</div>
+                </div>
+                <div class="col-md-3 col-6">
+                    <div class="stat-num">@dogCount</div>
+                    <div class="stat-label">Köpek</div>
+                </div>
+                <div class="col-md-3 col-6">
+                    <div class="stat-num">@catCount</div>
+                    <div class="stat-label">Kedi</div>
+                </div>
+                <div class="col-md-3 col-6">
+                    <div class="stat-num">@cityCount</div>
+                    <div class="stat-label">Şehir</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ===== NEDEN BİZ? ===== -->
+<section class="container my-5">
+    <h2 class="section-heading">Neden PetFinder Türkiye?</h2>
+    <div class="row g-4 mt-2">
+        <div class="col-md-4">
+            <div class="d-flex">
+                <div class="me-3" style="font-size:2.5rem;">❤️</div>
+                <div>
+                    <h6 class="fw-bold" style="color:var(--pf-purple-dark);">Ücretsiz Platform</h6>
+                    <p class="text-muted small mb-0">İlan vermek ve hayvan sahiplenmek tamamen ücretsiz.</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="d-flex">
+                <div class="me-3" style="font-size:2.5rem;">🛡️</div>
+                <div>
+                    <h6 class="fw-bold" style="color:var(--pf-purple-dark);">Güvenli İlanlar</h6>
+                    <p class="text-muted small mb-0">Her ilan kayıtlı kullanıcılar tarafından oluşturulur.</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="d-flex">
+                <div class="me-3" style="font-size:2.5rem;">📍</div>
+                <div>
+                    <h6 class="fw-bold" style="color:var(--pf-purple-dark);">Yerel Sonuçlar</h6>
+                    <p class="text-muted small mb-0">Şehrine en yakın hayvanları kolayca filtrele.</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="d-flex">
+                <div class="me-3" style="font-size:2.5rem;">📸</div>
+                <div>
+                    <h6 class="fw-bold" style="color:var(--pf-purple-dark);">Fotoğraflı İlanlar</h6>
+                    <p class="text-muted small mb-0">Her ilanda hayvanın fotoğrafını görerek karar ver.</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="d-flex">
+                <div class="me-3" style="font-size:2.5rem;">⚡</div>
+                <div>
+                    <h6 class="fw-bold" style="color:var(--pf-purple-dark);">Hızlı Arama</h6>
+                    <p class="text-muted small mb-0">Tür ve şehir filtreleriyle aradığını saniyeler içinde bul.</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="d-flex">
+                <div class="me-3" style="font-size:2.5rem;">🤝</div>
+                <div>
+                    <h6 class="fw-bold" style="color:var(--pf-purple-dark);">Topluluk Desteği</h6>
+                    <p class="text-muted small mb-0">Hayvan severlerin oluşturduğu sıcak bir topluluğun parçası ol.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ===== CTA BANTI ===== -->
+<section class="container mb-5">
+    <div class="card auth-card p-5 text-center" style="background: linear-gradient(135deg, var(--pf-purple) 0%, var(--pf-purple-dark) 100%); color:#fff;">
+        <h3 class="fw-bold mb-3">Kayıp Bir Dostun mu Var? İlan Vererek Duyur!</h3>
+        <p class="mb-4 opacity-75">Ücretsiz hesap oluştur, ilanını ekle ve binlerce hayvan severin yardımına ulaş.</p>
+        <div class="d-flex justify-content-center gap-2 flex-wrap">
+            @if (User.Identity?.IsAuthenticated == true)
+            {
+                <a asp-action="Create" class="btn btn-light btn-lg fw-bold" style="color:var(--pf-purple-dark);">
+                    <i class="bi bi-plus-circle"></i> Hemen İlan Ver
+                </a>
+            }
+            else
+            {
+                <a asp-controller="Account" asp-action="Register" class="btn btn-light btn-lg fw-bold" style="color:var(--pf-purple-dark);">
+                    <i class="bi bi-person-plus"></i> Ücretsiz Kayıt Ol
+                </a>
+                <a asp-controller="Account" asp-action="Login" class="btn btn-outline-light btn-lg">Giriş Yap</a>
+            }
+        </div>
+    </div>
+</section>

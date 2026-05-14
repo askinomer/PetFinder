@@ -32,7 +32,7 @@ public class AccountController : Controller
         var user = await _userService.ValidateAsync(model.Username, model.Password);
         if (user == null)
         {
-            ModelState.AddModelError(string.Empty, "Invalid username or password.");
+            ModelState.AddModelError(string.Empty, "Kullanıcı adı veya şifre hatalı.");
             return View(model);
         }
 
@@ -53,6 +53,8 @@ public class AccountController : Controller
                 ExpiresUtc = DateTimeOffset.UtcNow.AddHours(8)
             });
 
+        TempData["Success"] = $"Hoş geldin, {user.Username}!";
+
         if (!string.IsNullOrEmpty(returnUrl) && Url.IsLocalUrl(returnUrl))
             return Redirect(returnUrl);
 
@@ -64,6 +66,7 @@ public class AccountController : Controller
     public async Task<IActionResult> Logout()
     {
         await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+        TempData["Success"] = "Çıkış yapıldı.";
         return RedirectToAction("Index", "PetAd");
     }
 
@@ -79,7 +82,7 @@ public class AccountController : Controller
         var existing = await _userService.GetByUsernameAsync(model.Username);
         if (existing != null)
         {
-            ModelState.AddModelError(string.Empty, "Username already exists.");
+            ModelState.AddModelError(string.Empty, "Bu kullanıcı adı zaten kullanılıyor.");
             return View(model);
         }
 
@@ -89,6 +92,7 @@ public class AccountController : Controller
             Password = model.Password
         });
 
+        TempData["Success"] = "Kayıt başarılı! Şimdi giriş yapabilirsiniz.";
         return RedirectToAction(nameof(Login));
     }
 

@@ -1,58 +1,64 @@
 @model PetFinder.Models.PetAd
 @{
-    ViewData["Title"] = "New Pet Ad";
+    ViewData["Title"] = "Yeni İlan";
 }
 
-<div class="row justify-content-center">
-    <div class="col-md-7">
-        <div class="card shadow-sm">
-            <div class="card-body">
-                <h3 class="card-title mb-4"><i class="bi bi-plus-circle"></i> Create Pet Ad</h3>
+<div class="container my-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card auth-card">
+                <div class="card-body p-4">
+                    <h3 class="mb-4" style="color:var(--pf-purple-dark);">
+                        <i class="bi bi-plus-circle"></i> Yeni İlan Oluştur
+                    </h3>
+                    <p class="text-muted small">Kayıp veya sahiplendirme ilanı oluşturun</p>
 
-                <form asp-action="Create" method="post" enctype="multipart/form-data">
-                    <div asp-validation-summary="All" class="text-danger small mb-2"></div>
+                    <form asp-action="Create" method="post" enctype="multipart/form-data">
+                        <div asp-validation-summary="All" class="text-danger small mb-2"></div>
 
-                    <div class="mb-3">
-                        <label asp-for="Name" class="form-label"></label>
-                        <input asp-for="Name" class="form-control" />
-                        <span asp-validation-for="Name" class="text-danger small"></span>
-                    </div>
-
-                    <div class="row">
-                        <div class="col-md-6 mb-3">
-                            <label asp-for="Species" class="form-label"></label>
-                            <select asp-for="Species" class="form-select">
-                                <option value="">-- Select --</option>
-                                <option value="Cat">Cat</option>
-                                <option value="Dog">Dog</option>
-                            </select>
-                            <span asp-validation-for="Species" class="text-danger small"></span>
+                        <div class="mb-3">
+                            <label asp-for="Name" class="form-label"></label>
+                            <input asp-for="Name" class="form-control" placeholder="Örn. Pamuk" />
+                            <span asp-validation-for="Name" class="text-danger small"></span>
                         </div>
-                        <div class="col-md-6 mb-3">
-                            <label asp-for="City" class="form-label"></label>
-                            <input asp-for="City" class="form-control" />
-                            <span asp-validation-for="City" class="text-danger small"></span>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="Species" class="form-label"></label>
+                                <select asp-for="Species" class="form-select">
+                                    <option value="">-- Seçin --</option>
+                                    <option value="Köpek">🐕 Köpek</option>
+                                    <option value="Kedi">🐈 Kedi</option>
+                                </select>
+                                <span asp-validation-for="Species" class="text-danger small"></span>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="City" class="form-label"></label>
+                                <input asp-for="City" class="form-control" placeholder="Örn. İstanbul" />
+                                <span asp-validation-for="City" class="text-danger small"></span>
+                            </div>
                         </div>
-                    </div>
 
-                    <div class="mb-3">
-                        <label asp-for="Description" class="form-label"></label>
-                        <textarea asp-for="Description" rows="4" class="form-control"></textarea>
-                        <span asp-validation-for="Description" class="text-danger small"></span>
-                    </div>
+                        <div class="mb-3">
+                            <label asp-for="Description" class="form-label"></label>
+                            <textarea asp-for="Description" rows="4" class="form-control"
+                                      placeholder="Hayvanın özellikleri, kaybedildiği yer / sahiplendirme koşulları, iletişim bilgileri..."></textarea>
+                            <span asp-validation-for="Description" class="text-danger small"></span>
+                        </div>
 
-                    <div class="mb-3">
-                        <label class="form-label">Photo (stored as VARBINARY in DB)</label>
-                        <input type="file" name="imageFile" accept="image/*" class="form-control" />
-                    </div>
+                        <div class="mb-4">
+                            <label class="form-label">Fotoğraf <span class="text-muted small">(veritabanında BLOB olarak saklanır)</span></label>
+                            <input type="file" name="imageFile" accept="image/*" class="form-control" />
+                        </div>
 
-                    <div class="d-flex gap-2">
-                        <button type="submit" class="btn btn-primary">
-                            <i class="bi bi-check-circle"></i> Save
-                        </button>
-                        <a asp-action="Index" class="btn btn-secondary">Cancel</a>
-                    </div>
-                </form>
+                        <div class="d-flex gap-2">
+                            <button type="submit" class="btn btn-pf">
+                                <i class="bi bi-check-circle"></i> Kaydet
+                            </button>
+                            <a asp-action="Index" class="btn btn-outline-secondary">İptal</a>
+                        </div>
+                    </form>
+                </div>
             </div>
         </div>
     </div>
